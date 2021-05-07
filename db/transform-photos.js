@@ -20,12 +20,13 @@ fs.createReadStream(path)
   .pipe(parser())
   .on('data', (data) => {
     try {
-      // if (data.url) {
-      //   transformedPhotos.push(data);
-      // }
-      if (!data.url) {
-        data.url = "https://cdn.discordapp.com/attachments/831557223247249448/836269816590499840/360_F_207877921_BtG6ZKAVvtLyc5GWpBNEIlIxsffTtWkv.png"
+      if (data.url) {
+        delete data.id;
+        transformedPhotos.push(data);
       }
+      // if (!data.url) {
+      //   data.url = "https://cdn.discordapp.com/attachments/831557223247249448/836269816590499840/360_F_207877921_BtG6ZKAVvtLyc5GWpBNEIlIxsffTtWkv.png"
+      // }
       transformedPhotos.push(data);
     }
     catch(err) {
