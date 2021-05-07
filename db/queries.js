@@ -32,9 +32,9 @@ const getAnswers = (question_id, callback) => {
 
 // POST /qa/questions
 //`${url}/qa/${id}`
-const addQuestion = (product_id, newQuestion, callback) => {
+const addQuestion = (productId, newQuestion, callback) => {
   const {body, name, email} = newQuestion;
-  client.query(`INSERT INTO questions (product_id, question_body, name, email) VALUES ("${product_id}", "${body}", "${name}", "${email}")`, (err, res) => {
+  client.query(`INSERT INTO questions (product_id, question_body, name, email) VALUES ('${productId}', '${body}', '${name}', '${email}')`, (err, res) => {
     if (err) {
       console.log('db error:', err.stack);
       callback(err.stack);
@@ -47,6 +47,9 @@ const addQuestion = (product_id, newQuestion, callback) => {
 
 // POST /qa/questions/:question_id/answers
 // `${url}/qa/${questionId}/answers`
+const addAnswer = (questionId, newAnswer, callback) => {
+  const
+}
 
 
 // PUT markQAsHelpful

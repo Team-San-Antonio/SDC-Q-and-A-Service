@@ -10,7 +10,6 @@ let transformedAnswers = [];
 const csvWriter = createCsvWriter({
   path: './csv/transformed_answers1.csv',
   header: [
-    {id: 'id', title: 'id'},
     {id: 'question_id', title: 'question_id'},
     {id: 'body', title: 'body'},
     {id: 'date_written', title: 'date_written'},
