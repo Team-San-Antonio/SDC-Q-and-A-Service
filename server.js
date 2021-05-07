@@ -7,8 +7,8 @@ const port = 3001;
 app.use(express.json());
 
 // GET /qa/questions Retrieves a list of questions for a particular product
-app.get('/qa/questions', (req, res) => {
-  queries.getQuestions(1, (err, result) => {
+app.get('/qa/questions/:id', (req, res) => {
+  queries.getQuestions(req.params.id, (err, result) => {
     if (err) {
       res.status(404).send('Error getting questions');
     } else {
@@ -18,6 +18,16 @@ app.get('/qa/questions', (req, res) => {
 })
 
 // GET /qa/questions/:question_id/answers
+app.get('/qa/:id/answers', (req, res) => {
+  queries.getAnswers(req.params.id, (err, result) => {
+    if (err) {
+      res.status(404).send('Error getting answers');
+    } else {
+      res.send(result);
+    }
+  })
+})
+
 
 // POST /qa/questions
 
