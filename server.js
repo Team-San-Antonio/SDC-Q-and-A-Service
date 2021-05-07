@@ -46,6 +46,15 @@ app.post('/qa/:id', (req, res) => {
 
 // POST /qa/questions/:question_id/answers
 // `${url}/qa/${questionId}/answers`
+app.post('/qa/:id/answers', (req, res) => {
+  queries.addAnswer(req.params.id, req.body, (err, result) => {
+    if (err) {
+      res.status(404).send('Error adding answer');
+    } else {
+      res.status(201).send('Added answer')
+    }
+  })
+})
 
 
 // PUT markQAsHelpful

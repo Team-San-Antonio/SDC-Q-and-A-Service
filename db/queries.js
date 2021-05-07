@@ -34,7 +34,8 @@ const getAnswers = (question_id, callback) => {
 //`${url}/qa/${id}`
 const addQuestion = (productId, newQuestion, callback) => {
   const {body, name, email} = newQuestion;
-  client.query(`INSERT INTO questions (product_id, question_body, name, email) VALUES ('${productId}', '${body}', '${name}', '${email}')`, (err, res) => {
+  const values = [productId, body, name, email];
+  client.query(`INSERT INTO questions (product_id, question_body, name, email) VALUES ($1, $2, $3, $4)`, values, (err, res) => {
     if (err) {
       console.log('db error:', err.stack);
       callback(err.stack);
@@ -48,7 +49,16 @@ const addQuestion = (productId, newQuestion, callback) => {
 // POST /qa/questions/:question_id/answers
 // `${url}/qa/${questionId}/answers`
 const addAnswer = (questionId, newAnswer, callback) => {
-  const
+  const {body, name, email, photos} = newAnswer;
+  const values = [questionId, body, name, email];
+  client.query(`INSERT INTO answers (question_id, body, answerer_name, email) VALUES ($1, $2, $3, $4)`, values, (err, res) => {
+    if (err) {
+      console.log('db error:', err.stack);
+      callback(err.stack);
+    } else {
+      callback(null, res.rows);
+    }
+  })
 }
 
 
@@ -68,7 +78,8 @@ const addAnswer = (questionId, newAnswer, callback) => {
 module.exports = ({
   getQuestions,
   getAnswers,
-  addQuestion
+  addQuestion,
+  addAnswer
 });
 
 
