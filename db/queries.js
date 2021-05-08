@@ -9,26 +9,20 @@ client.connect();
 
 //GET /qa/questions   => Retrieves a list of questions for a particular product
 const getQuestions = (product_id, callback) => {
-  client.query(`SELECT question_id, question_body, question_helpfulness FROM questions WHERE product_id = ${product_id}`, (err, res) => {
-    if (err) {
-      console.log(err.stack);
-      callback(err.stack);
-    } else {
+  const query = `SELECT question_id, question_body, question_helpfulness FROM questions WHERE product_id = ${product_id}`
+  ;(async () => {
+    const client = await pool.connect()
+    try {
+      const res = await client.query(query);
       callback(null, res.rows);
+    } finally {
+      client.release()
     }
-  })
+  })().catch(err => console.log(err.stack))
 }
 
 // GET /qa/questions/:question_id/answers  => Returns answers for a given question.
 const getAnswers = (question_id, callback) => {
-  // client.query(`SELECT * FROM answers, photos WHERE answers.answer_id = 5 AND photos.answer_id = 5`, [question_id], (err, res) => {
-  //   if (err) {
-  //     console.log(err.stack);
-  //     callback(err.stack);
-  //   } else {
-  //     callback(null, res.rows);
-  //   }
-  // })
   const query =
     `SELECT *,
     (
@@ -41,8 +35,6 @@ const getAnswers = (question_id, callback) => {
       const res = await client.query(query);
       callback(null, res.rows);
     } finally {
-      // Make sure to release the client before any error handling,
-      // just in case the error handling itself throws an error.
       client.release()
     }
   })().catch(err => console.log(err.stack))
@@ -70,14 +62,26 @@ const addQuestion = (productId, newQuestion, callback) => {
 const addAnswer = (questionId, newAnswer, callback) => {
   const {body, name, email, photos} = newAnswer;
   const values = [questionId, body, name, email];
-  client.query(`INSERT INTO answers (question_id, body, answerer_name, email) VALUES ($1, $2, $3, $4)`, values, (err, res) => {
-    if (err) {
-      console.log('db error:', err.stack);
-      callback(err.stack);
-    } else {
+  const query = `WITH new_answer AS (
+    INSERT INTO answers (question_id, body, answerer_name, email)
+    VALUES (${questionId}, '${body}', '${name}', '${email}')
+    returning answer_id
+  )
+    INSERT INTO photos (answer_id, url)
+    SELECT answer_id, unnest(ARRAY${photos})
+    FROM new_answer`
+
+  ;(async () => {
+    const client = await pool.connect()
+    try {
+      const res = await client.query(query);
       callback(null, res.rows);
+    } finally {
+      // Make sure to release the client before any error handling,
+      // just in case the error handling itself throws an error.
+      client.release()
     }
-  })
+  })().catch(err => console.log(err.stack))
 }
 
 
