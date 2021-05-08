@@ -59,17 +59,51 @@ app.post('/qa/:id/answers', (req, res) => {
 
 // PUT markQAsHelpful
 // `${url}/qa/question/${questionId}/helpful`
+app.put('/qa/question/:id/helpful', (req, res) => {
+  queries.markQAsHelpful(req.params.id, (err, result) => {
+    if (err) {
+      res.status(400).send('Error incrementing question helpfulness');
+    } else {
+      res.status(204).send('Incremented question helpfulness')
+    }
+  })
+})
 
 //PUT reportQuestion
 // `${url}/qa/question/${questionId}/report`
+app.put('/qa/question/:id/report', (req, res) => {
+  queries.reportQuestion(req.params.id, (err, result) => {
+    if (err) {
+      res.status(400).send('Error reporting question');
+    } else {
+      res.status(204).send('Reported question');
+    }
+  })
+})
 
 //PUT markAnsAsHelpful
 //`${url}/qa/answer/${answerID}/helpful`
+app.put('/qa/answer/:id/helpful', (req, res) => {
+  queries.markAnsAsHelpful(req.params.id, (err, result) => {
+    if (err) {
+      res.status(400).send('Error incrementing answer helpfulness');
+    } else {
+      res.status(204).send('Incremented answer helpfulness')
+    }
+  })
+})
 
 //PUT reportAns
 //`${url}/qa/answer/${answerID}/report`
-
-
+app.put('/qa/answer/:id/report', (req, res) => {
+  queries.reportAnswer(req.params.id, (err, result) => {
+    if (err) {
+      res.status(400).send('Error reporting answer');
+    } else {
+      res.status(204).send('Reported answer');
+    }
+  })
+})
 
 
 app.listen(port, () => {

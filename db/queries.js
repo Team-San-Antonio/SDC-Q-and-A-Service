@@ -87,22 +87,74 @@ const addAnswer = (questionId, newAnswer, callback) => {
 
 // PUT markQAsHelpful
 // `${url}/qa/question/${questionId}/helpful`
+const markQAsHelpful = (questionId, callback) => {
+  const query =  `UPDATE questions SET question_helpfulness = question_helpfulness + 1 WHERE question_id = ${questionId}`;
+  ;(async () => {
+    const client = await pool.connect();
+    try {
+      const res = await client.query(query);
+      callback(null, res.rows);
+    } finally {
+      client.release();
+    }
+  })().catch(err => console.log(err.stack))
+}
 
 //PUT reportQuestion
 // `${url}/qa/question/${questionId}/report`
+const reportQuestion = (questionId, callback) => {
+  const query =  `UPDATE questions SET reported = 1 WHERE question_id = ${questionId}`;
+  ;(async () => {
+    const client = await pool.connect();
+    try {
+      const res = await client.query(query);
+      callback(null, res.rows);
+    } finally {
+      client.release();
+    }
+  })().catch(err => console.log(err.stack))
+}
 
 //PUT markAnsAsHelpful
 //`${url}/qa/answer/${answerID}/helpful`
+const markAnsAsHelpful = (answerId, callback) => {
+  const query =  `UPDATE answers SET helpfulness = helpfulness + 1 WHERE answer_id = ${answerId}`;
+  ;(async () => {
+    const client = await pool.connect();
+    try {
+      const res = await client.query(query);
+      callback(null, res.rows);
+    } finally {
+      client.release();
+    }
+  })().catch(err => console.log(err.stack))
+}
 
 //PUT reportAns
 //`${url}/qa/answer/${answerID}/report`
+const reportAnswer = (answerId, callback) => {
+  const query =  `UPDATE answers SET reported = 1 WHERE answer_id = ${answerId}`;
+  ;(async () => {
+    const client = await pool.connect();
+    try {
+      const res = await client.query(query);
+      callback(null, res.rows);
+    } finally {
+      client.release();
+    }
+  })().catch(err => console.log(err.stack))
+}
 
 
 module.exports = ({
   getQuestions,
   getAnswers,
   addQuestion,
-  addAnswer
+  addAnswer,
+  markQAsHelpful,
+  reportQuestion,
+  markAnsAsHelpful,
+  reportAnswer
 });
 
 
