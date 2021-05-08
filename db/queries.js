@@ -3,6 +3,8 @@ const { Pool, Client } = require('pg');
 
 const client = new Client(config);
 
+const pool = new Pool(config);
+
 client.connect();
 
 //GET /qa/questions   => Retrieves a list of questions for a particular product
@@ -19,14 +21,31 @@ const getQuestions = (product_id, callback) => {
 
 // GET /qa/questions/:question_id/answers  => Returns answers for a given question.
 const getAnswers = (question_id, callback) => {
-  client.query(`SELECT answer_id, body, date, answerer_name, helpfulness FROM answers WHERE question_id = ${question_id}`, (err, res) => {
-    if (err) {
-      console.log(err.stack);
-      callback(err.stack);
-    } else {
+  // client.query(`SELECT * FROM answers, photos WHERE answers.answer_id = 5 AND photos.answer_id = 5`, [question_id], (err, res) => {
+  //   if (err) {
+  //     console.log(err.stack);
+  //     callback(err.stack);
+  //   } else {
+  //     callback(null, res.rows);
+  //   }
+  // })
+  const query =
+    `SELECT *,
+    (
+      SELECT (jsonb_agg(url)) AS photos FROM photos WHERE answers.answer_id = photos.answer_id
+    )
+    FROM answers WHERE question_id = ${question_id}`
+  ;(async () => {
+    const client = await pool.connect()
+    try {
+      const res = await client.query(query);
       callback(null, res.rows);
+    } finally {
+      // Make sure to release the client before any error handling,
+      // just in case the error handling itself throws an error.
+      client.release()
     }
-  })
+  })().catch(err => console.log(err.stack))
 }
 
 
