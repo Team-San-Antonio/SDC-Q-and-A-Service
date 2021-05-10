@@ -3,32 +3,32 @@
 -- SET search_path TO q_and_a;
 
 CREATE TABLE IF NOT EXISTS questions (
-  id INT PRIMARY KEY NOT NULL,
+  question_id SERIAL PRIMARY KEY NOT NULL,
   product_id INT NOT NULL,
-  body CHAR(300),
+  question_body CHAR(300),
   date_written CHAR(100),
-  asker_name TEXT,
-  asker_email CHAR(50),
+  name TEXT,
+  email CHAR(50),
   reported INT,
-  helpful INT
+  question_helpfulness INT
 );
 
 CREATE TABLE IF NOT EXISTS answers (
-  id INT PRIMARY KEY NOT NULL,
+  answer_id SERIAL PRIMARY KEY NOT NULL,
   question_id INT NOT NULL,
   body CHAR(255),
-  date_written CHAR(100),
+  date CHAR(100),
   answerer_name TEXT,
-  answerer_email CHAR(50),
+  email CHAR(50),
   reported INT,
-  helpful INT
+  helpfulness INT
   -- CONSTRAINT fk_answers_questions
   --   FOREIGN KEY (question_id)
   --     REFERENCES questions (id)
 );
 
 CREATE TABLE IF NOT EXISTS photos (
-  id INT PRIMARY KEY NOT NULL,
+  id SERIAL PRIMARY KEY NOT NULL,
   answer_id INT NOT NULL,
   url CHAR(250)
   -- CONSTRAINT fk_photos_answers
@@ -36,22 +36,23 @@ CREATE TABLE IF NOT EXISTS photos (
   --     REFERENCES answers (id)
 );
 
-COPY questions
-FROM '/Users/acdavitt/hackreactor/csv/csv/transformed_questions_PH.csv'
+
+COPY questions (product_id, question_body, date_written, name, email, reported, question_helpfulness)
+FROM '/Users/acdavitt/hackreactor/SDC-Q-and-A-Service/csv/transformed_questions_PH.csv'
 DELIMITER ','
 CSV HEADER;
 
-COPY answers
-FROM '/Users/acdavitt/hackreactor/csv/csv/transformed_answers1.csv'
+COPY answers (question_id, body, date, answerer_name, email, reported, helpfulness)
+FROM '/Users/acdavitt/hackreactor/SDC-Q-and-A-Service/csv/transformed_answers1.csv'
 DELIMITER ','
 CSV HEADER;
 
-COPY answers
-FROM '/Users/acdavitt/hackreactor/csv/csv/transformed_answers2.csv'
+COPY answers (question_id, body, date, answerer_name, email, reported, helpfulness)
+FROM '/Users/acdavitt/hackreactor/SDC-Q-and-A-Service/csv/transformed_answers2.csv'
 DELIMITER ','
 CSV HEADER;
 
-COPY photos
-FROM '/Users/acdavitt/hackreactor/csv/csv/transformed_photos_PH.csv'
+COPY photos (answer_id, url)
+FROM '/Users/acdavitt/hackreactor/SDC-Q-and-A-Service/csv/transformed_photos_PH.csv'
 DELIMITER ','
 CSV HEADER;

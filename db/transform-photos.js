@@ -10,7 +10,6 @@ const csvWriter = createCsvWriter({
   // path: './csv/transformed_photos.csv',
   path: './csv/transformed_photos_PH.csv',
   header: [
-    {id: 'id', title: 'id'},
     {id: 'answer_id', title: 'answer_id'},
     {id: 'url', title: 'url'}
   ]
