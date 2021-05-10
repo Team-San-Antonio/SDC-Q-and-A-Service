@@ -1,3 +1,10 @@
+ALTER TABLE questions ALTER COLUMN reported SET DEFAULT 0;
+ALTER TABLE questions ALTER COLUMN question_helpfulness SET DEFAULT 0;
+ALTER TABLE answers ALTER COLUMN reported SET DEFAULT 0;
+ALTER TABLE answers ALTER COLUMN helpfulness SET DEFAULT 0;
+ALTER TABLE photos ALTER COLUMN url DROP DEFAULT;
+
+
 -- -- For GET requests
 -- ALTER TABLE questions
 -- RENAME helpful TO question_helpfulness;
