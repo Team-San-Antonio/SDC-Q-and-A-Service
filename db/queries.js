@@ -1,5 +1,6 @@
 const config = require('../config.js')
 const { Pool, Client } = require('pg');
+const moment = require('moment');
 
 const client = new Client(config);
 
@@ -9,7 +10,7 @@ client.connect();
 
 //GET /qa/questions   => Retrieves a list of questions for a particular product
 const getQuestions = (product_id, callback) => {
-  const query = `SELECT question_id, question_body, question_helpfulness FROM questions WHERE product_id = ${product_id}`
+  const query = `SELECT question_id, question_body, question_helpfulness FROM questions WHERE product_id = ${product_id} AND reported = 0`
   ;(async () => {
     const client = await pool.connect()
     try {
@@ -28,7 +29,7 @@ const getAnswers = (question_id, callback) => {
     (
       SELECT (jsonb_agg(url)) AS photos FROM photos WHERE answers.answer_id = photos.answer_id
     )
-    FROM answers WHERE question_id = ${question_id}`
+    FROM answers WHERE question_id = ${question_id} AND reported = 0`
   ;(async () => {
     const client = await pool.connect()
     try {
@@ -61,14 +62,22 @@ const addQuestion = (productId, newQuestion, callback) => {
 // `${url}/qa/${questionId}/answers`
 const addAnswer = (questionId, newAnswer, callback) => {
   const {body, name, email, photos} = newAnswer;
+  let unnestPhotos = '';
+  if (photos === '[]') {
+    unnestPhotos = null;
+  } else {
+    unnestPhotos = `unnest(ARRAY${photos})`;
+  }
+
   const values = [questionId, body, name, email];
+  const date = moment().format();
   const query = `WITH new_answer AS (
-    INSERT INTO answers (question_id, body, answerer_name, email)
-    VALUES (${questionId}, '${body}', '${name}', '${email}')
+    INSERT INTO answers (question_id, body, date, answerer_name, email)
+    VALUES (${questionId}, '${body}', '${date}', '${name}', '${email}')
     returning answer_id
   )
     INSERT INTO photos (answer_id, url)
-    SELECT answer_id, unnest(ARRAY${photos})
+    SELECT answer_id, ${unnestPhotos}
     FROM new_answer`
 
   ;(async () => {
