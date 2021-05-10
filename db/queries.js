@@ -10,7 +10,7 @@ client.connect();
 
 //GET /qa/questions   => Retrieves a list of questions for a particular product
 const getQuestions = (product_id, callback) => {
-  const query = `SELECT question_id, question_body, question_helpfulness FROM questions WHERE product_id = ${product_id}`
+  const query = `SELECT question_id, question_body, question_helpfulness FROM questions WHERE product_id = ${product_id} AND reported = 0`
   ;(async () => {
     const client = await pool.connect()
     try {
@@ -29,7 +29,7 @@ const getAnswers = (question_id, callback) => {
     (
       SELECT (jsonb_agg(url)) AS photos FROM photos WHERE answers.answer_id = photos.answer_id
     )
-    FROM answers WHERE question_id = ${question_id}`
+    FROM answers WHERE question_id = ${question_id} AND reported = 0`
   ;(async () => {
     const client = await pool.connect()
     try {
