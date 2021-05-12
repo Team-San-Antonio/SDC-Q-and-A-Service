@@ -10,12 +10,15 @@ services:
       DB_PASS: pgtest
     ports:
       - "3001:3001"
+    # depends_on:
+    #   postgres
   postgres:
     image: postgres
     environment:
       POSTGRES_PASSWORD: pgtest
       POSTGRES_USER: acdavitt
       POSTGRES_DB: q_and_a
+      DATABASE_URL: postgres://acdavitt:@localhost:5432/q_and_a
     container_name: sdc_pg_container
     restart: always
     # env_file:

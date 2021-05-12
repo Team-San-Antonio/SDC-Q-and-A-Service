@@ -14,11 +14,11 @@ const config = {
   port: process.env.DB_PORT,
 }
 
-const client = new Client(config);
+// const client = new Client(config);
 
 const pool = new Pool(config);
 
-client.connect();
+// client.connect();
 
 //GET /qa/questions   => Retrieves a list of questions for a particular product
 const getQuestions = (product_id, callback) => {
