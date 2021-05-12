@@ -1,6 +1,18 @@
-const config = require('../config.js')
+// const config = require('../config.js')
+// const dotenv = require('dotenv');
+require('dotenv').config();
 const { Pool, Client } = require('pg');
 const moment = require('moment');
+
+// const result = dotenv.config()
+
+const config = {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  database: process.env.DB_DATA,
+  password: process.env.DB_PASS,
+  port: process.env.DB_PORT,
+}
 
 const client = new Client(config);
 

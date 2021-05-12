@@ -3,15 +3,23 @@ services:
   q-and-a:
     container_name: q_and_a_container
     build: ~/hackreactor/SDC-Q-and-A-Service/
-    restart: always
+    # restart: always
+    environment:
+      DB_HOST: host.docker.internal
+      DB_USER: acdavitt
+      DB_PASS: pgtest
     ports:
-      - "3003:3003"
+      - "3001:3001"
   postgres:
     image: postgres
+    environment:
+      POSTGRES_PASSWORD: pgtest
+      POSTGRES_USER: acdavitt
+      POSTGRES_DB: q_and_a
     container_name: sdc_pg_container
     restart: always
-    env_file:
-      - ./.env
+    # env_file:
+      # - ./.env
     ports:
       - "5432:5432"
     volumes:
