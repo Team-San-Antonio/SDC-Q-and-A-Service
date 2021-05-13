@@ -1,12 +1,24 @@
-const config = require('../config.js')
+// const config = require('../config.js')
+// const dotenv = require('dotenv');
+require('dotenv').config();
 const { Pool, Client } = require('pg');
 const moment = require('moment');
 
-const client = new Client(config);
+// const result = dotenv.config()
+
+const config = {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  database: process.env.DB_DATA,
+  password: process.env.DB_PASS,
+  port: process.env.DB_PORT,
+}
+
+// const client = new Client(config);
 
 const pool = new Pool(config);
 
-client.connect();
+// client.connect();
 
 //GET /qa/questions   => Retrieves a list of questions for a particular product
 const getQuestions = (product_id, callback) => {
@@ -47,14 +59,26 @@ const getAnswers = (question_id, callback) => {
 const addQuestion = (productId, newQuestion, callback) => {
   const {body, name, email} = newQuestion;
   const values = [productId, body, name, email];
-  client.query(`INSERT INTO questions (product_id, question_body, name, email) VALUES ($1, $2, $3, $4)`, values, (err, res) => {
-    if (err) {
-      console.log('db error:', err.stack);
-      callback(err.stack);
-    } else {
+  const query = `INSERT INTO questions (product_id, question_body, name, email) VALUES ($1, $2, $3, $4)`
+
+  ;(async () => {
+    const client = await pool.connect()
+    try {
+      const res = await client.query(query, values);
       callback(null, res.rows);
+    } finally {
+      client.release()
     }
-  })
+  })().catch(err => console.log(err.stack))
+
+  // client.query(`INSERT INTO questions (product_id, question_body, name, email) VALUES ($1, $2, $3, $4)`, values, (err, res) => {
+  //   if (err) {
+  //     console.log('db error:', err.stack);
+  //     callback(err.stack);
+  //   } else {
+  //     callback(null, res.rows);
+  //   }
+  // })
 }
 
 
