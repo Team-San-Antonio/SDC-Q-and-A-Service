@@ -13,6 +13,8 @@ RUN npm install
 # RUN npm install --only=production
 
 # Bundle app source
+# COPY db/ ./
+# COPY server.js ./
 COPY . .
 EXPOSE 3005
 

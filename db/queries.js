@@ -59,14 +59,26 @@ const getAnswers = (question_id, callback) => {
 const addQuestion = (productId, newQuestion, callback) => {
   const {body, name, email} = newQuestion;
   const values = [productId, body, name, email];
-  client.query(`INSERT INTO questions (product_id, question_body, name, email) VALUES ($1, $2, $3, $4)`, values, (err, res) => {
-    if (err) {
-      console.log('db error:', err.stack);
-      callback(err.stack);
-    } else {
+  const query = `INSERT INTO questions (product_id, question_body, name, email) VALUES ($1, $2, $3, $4)`
+
+  ;(async () => {
+    const client = await pool.connect()
+    try {
+      const res = await client.query(query, values);
       callback(null, res.rows);
+    } finally {
+      client.release()
     }
-  })
+  })().catch(err => console.log(err.stack))
+
+  // client.query(`INSERT INTO questions (product_id, question_body, name, email) VALUES ($1, $2, $3, $4)`, values, (err, res) => {
+  //   if (err) {
+  //     console.log('db error:', err.stack);
+  //     callback(err.stack);
+  //   } else {
+  //     callback(null, res.rows);
+  //   }
+  // })
 }
 
 
