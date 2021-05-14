@@ -105,6 +105,11 @@ app.put('/qa/answer/:id/report', (req, res) => {
   })
 })
 
+//get req for loaderio
+app.get('/loaderio-f27e40a7f2c1ff3f9524821fc7c8ad3e/', (req, res) => {
+  res.send('loaderio-f27e40a7f2c1ff3f9524821fc7c8ad3e')
+})
+
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
